@@ -10,21 +10,21 @@ const Home = ({navigation}) => {
         mode="contained"
         onPress={() => navigation.navigate('Form')}
         style={styles.button}>
-        Form
+        Formularz
       </Button>
       <Button
         icon="calendar"
         mode="contained"
         onPress={() => navigation.navigate('Calendar')}
         style={styles.button}>
-        Calendar
+        Kalendarz
       </Button>
       <Button
         icon="chart-bar"
         mode="contained"
         onPress={() => navigation.navigate('Statistics')}
         style={styles.button}>
-        Statistics
+        Statystyki
       </Button>
     </View>
   );

@@ -142,3 +142,16 @@ export const colors = [
     value: '#3eede1',
   },
 ];
+
+export const getById = (el, id) => {
+  switch (el) {
+    case 'type':
+      return types.filter(item => item.id === id)[0];
+    case 'size':
+      return sizes.filter(item => item.id === id)[0];
+    case 'color':
+      return colors.filter(item => item.id === id)[0];
+    default:
+      break;
+  }
+};

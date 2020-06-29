@@ -5,9 +5,16 @@ import {colors, types, sizes} from '../../data/dummyData';
 
 import ColorCard from '../../components/ColorCard';
 
-const Step2 = ({data, setColor}) => {
+const Step2 = ({data, action, navigation}) => {
   const currentType = types.filter(type => data.type === type.id);
   const currentSize = sizes.filter(size => data.size === size.id);
+
+  const setColor = color => {
+    action({...data, color: color});
+    setTimeout(() => {
+      navigation.navigate('Step4');
+    }, 100);
+  };
 
   const displayCards = colors.map(color => (
     <ColorCard

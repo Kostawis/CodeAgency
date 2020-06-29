@@ -81,6 +81,8 @@ target 'codeAgency' do
 
   pod 'RNGestureHandler', :path => '../node_modules/react-native-gesture-handler'
 
+  pod 'RealmJS', :path => '../node_modules/realm'
+
   target 'codeAgencyTests' do
     inherit! :complete
     # Pods for testing

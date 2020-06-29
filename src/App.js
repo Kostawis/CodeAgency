@@ -8,6 +8,7 @@ import Home from './screens/Home';
 import Calendar from './screens/Calendar';
 import Form from './screens/Form';
 import Statistics from './screens/Statistics';
+import Summary from './screens/Summary';
 
 const Stack = createStackNavigator();
 
@@ -34,7 +35,7 @@ const App = () => {
           name="Form"
           component={Form}
           options={{
-            headerTitle: 'Form',
+            headerTitle: 'Formularz',
             ...TransitionPresets.SlideFromRightIOS,
           }}
         />
@@ -42,7 +43,7 @@ const App = () => {
           name="Calendar"
           component={Calendar}
           options={{
-            headerTitle: 'Calendar',
+            headerTitle: 'Kalendarz',
             ...TransitionPresets.SlideFromRightIOS,
           }}
         />
@@ -50,8 +51,17 @@ const App = () => {
           name="Statistics"
           component={Statistics}
           options={{
-            headerTitle: 'Statistics',
+            headerTitle: 'Statystyki',
             ...TransitionPresets.SlideFromRightIOS,
+          }}
+        />
+        <Stack.Screen
+          name="Summary"
+          component={Summary}
+          options={{
+            headerTitle: 'Podsumowanie',
+            ...TransitionPresets.SlideFromRightIOS,
+            headerLeft: undefined,
           }}
         />
       </Stack.Navigator>

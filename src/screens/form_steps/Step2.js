@@ -19,10 +19,17 @@ const ListElement = ({setChecked, checked, size: {id, name}}) => (
   </View>
 );
 
-const Step2 = ({data, setSize}) => {
+const Step2 = ({data, action, navigation}) => {
+  const setSize = size => {
+    action({...data, size: size});
+    setTimeout(() => {
+      navigation.navigate('Step3');
+    }, 100);
+  };
+
   const elementsList = sizes.map(size => (
     <ListElement
-      key={data.id}
+      key={size.id}
       size={size}
       setChecked={setSize}
       checked={data.size}

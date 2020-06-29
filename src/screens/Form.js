@@ -14,13 +14,14 @@ const Label = ({active}) => (
 const Tab = createBottomTabNavigator();
 
 const Form = () => {
-  const [formData, setFormData] = useState({type: 1, size: 1, color: 1});
-
-  const setType = type => setFormData({...formData, type: type});
-  const setSize = size => setFormData({...formData, size: size});
-  const setColor = color => setFormData({...formData, color: color});
-
-  console.log(formData);
+  const [formData, setFormData] = useState({
+    type: 1,
+    size: 1,
+    color: 1,
+    private: false,
+    allowShare: true,
+    description: '',
+  });
 
   return (
     <Tab.Navigator
@@ -40,16 +41,16 @@ const Form = () => {
         // style: {width: 200},
       }}>
       <Tab.Screen name="Step1">
-        {props => <Step1 {...props} setType={setType} data={formData} />}
+        {props => <Step1 {...props} action={setFormData} data={formData} />}
       </Tab.Screen>
       <Tab.Screen name="Step2">
-        {props => <Step2 {...props} setSize={setSize} data={formData} />}
+        {props => <Step2 {...props} action={setFormData} data={formData} />}
       </Tab.Screen>
       <Tab.Screen name="Step3">
-        {props => <Step3 {...props} setColor={setColor} data={formData} />}
+        {props => <Step3 {...props} action={setFormData} data={formData} />}
       </Tab.Screen>
       <Tab.Screen name="Step4">
-        {props => <Step4 {...props} data={formData} />}
+        {props => <Step4 {...props} action={setFormData} data={formData} />}
       </Tab.Screen>
     </Tab.Navigator>
   );

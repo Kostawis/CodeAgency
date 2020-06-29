@@ -14,14 +14,18 @@ const Header = ({scene, previous, navigation, theme}) => {
     <Appbar.Header>
       {previous && (
         <Appbar.BackAction
-          onPress={() => navigation.goBack()}
+          onPress={() =>
+            scene.route.name === 'Summary'
+              ? navigation.navigate('Home')
+              : navigation.goBack()
+          }
           color={theme.colors.surface}
         />
       )}
       <Appbar.Content title={title} />
       <IconButton
         icon="share"
-        onPress={console.log('click')}
+        // onPress={}
         color={theme.colors.surface}
       />
     </Appbar.Header>

@@ -5,7 +5,13 @@ import {types} from '../../data/dummyData';
 
 import TypeCard from '../../components/TypeCard';
 
-const Step1 = ({data, setType}) => {
+const Step1 = ({data, action, navigation}) => {
+  const setType = type => {
+    action({...data, type: type});
+    setTimeout(() => {
+      navigation.navigate('Step2');
+    }, 100);
+  };
   const displayCards = types.map(type => (
     <TypeCard
       action={setType}
