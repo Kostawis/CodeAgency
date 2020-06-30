@@ -88,7 +88,12 @@ class Calendar extends Component {
     return (
       <TouchableOpacity
         style={styles.item}
-        onPress={() => console.log(item.id)}>
+        onPress={() =>
+          this.props.navigation.navigate('Summary', {
+            id: item.id,
+          })
+        }
+        onLongPress={() => console.log('long')}>
         <Text>{item.id}</Text>
         <Text>{item.description}</Text>
       </TouchableOpacity>

@@ -15,9 +15,10 @@ const Header = ({scene, previous, navigation, theme}) => {
       {previous && (
         <Appbar.BackAction
           onPress={() =>
-            scene.route.name === 'Summary'
-              ? navigation.navigate('Home')
-              : navigation.goBack()
+            // scene.route.name === 'Summary'
+            //   ? navigation.navigate('Home')
+            //   :
+            navigation.goBack()
           }
           color={theme.colors.surface}
         />
