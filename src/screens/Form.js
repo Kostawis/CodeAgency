@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
 import {View, StyleSheet} from 'react-native';
-import {Button} from 'react-native-paper';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
 import Step1 from './form_steps/Step1';
@@ -27,13 +26,8 @@ const Form = () => {
   return (
     <Tab.Navigator
       screenOptions={({route}) => ({
-        tabBarIcon: ({focused}) => {
-          return <Label active={focused} />;
-        },
-        // tabBarLabel: () => <Label />,
-        // tabBarVisible: false,
+        tabBarIcon: ({focused}) => <Label active={focused} />,
       })}
-      //   tabBar={() => ()}
       tabBarOptions={{
         activeTintColor: 'tomato',
         inactiveTintColor: 'gray',

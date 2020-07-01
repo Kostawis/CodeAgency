@@ -88,7 +88,7 @@ const Statistics = () => {
               backgroundGradientTo: 'rgba(84, 13, 110, .1)',
               backgroundGradientToOpacity: 0.6,
               backgroundGradientFromOpacity: 0.8,
-              decimalPlaces: 0, // optional, defaults to 2dp
+              decimalPlaces: 0,
               color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
             }}
             style={styles.circleChart}

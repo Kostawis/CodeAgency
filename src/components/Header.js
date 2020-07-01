@@ -25,15 +25,12 @@ const Header = ({scene, previous, navigation, theme, viewScreen}) => {
     await Share.open(shareOptions);
   };
 
+  console.log(scene.route);
   return (
     <Appbar.Header>
       {previous && (
         <Appbar.BackAction
-          onPress={() =>
-            scene.route.name === 'Summary' || scene.route.name === 'Calendar'
-              ? navigation.navigate('Home')
-              : navigation.goBack()
-          }
+          onPress={() => navigation.goBack()}
           color={theme.colors.surface}
         />
       )}

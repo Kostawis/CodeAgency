@@ -1,123 +1,104 @@
-import React, {Component} from 'react';
+import React, {useState, useEffect} from 'react';
 import {StyleSheet, Text, View, TouchableOpacity, Image} from 'react-native';
 import {Agenda} from 'react-native-calendars';
-import {queryAll, deleteById} from '../database/realmSchema';
-import {NavigationEvents} from '@react-navigation';
-import Swipeout from 'react-native-swipeout';
-
+import {queryAll} from '../database/realmSchema';
 import {getById} from '../data/dummyData';
 
-class Calendar extends Component {
-  constructor(props) {
-    super(props);
+const Calendar = ({navigation}) => {
+  const [items, setItems] = useState({});
 
-    this.state = {
-      items: {},
-    };
-  }
-
-  render() {
+  const renderItem = ({id, description, color, type}) => {
     return (
-      <>
-        <NavigationEvents
-          onWillFocus={payload => console.log('will focus', payload)}
-          onDidFocus={payload => console.log('did focus', payload)}
-          onWillBlur={payload => console.log('will blur', payload)}
-          onDidBlur={payload => console.log('did blur', payload)}
-        />
-        <Agenda
-          items={this.state.items}
-          loadItemsForMonth={this.loadItems.bind(this)}
-          renderItem={this.renderItem.bind(this)}
-          rowHasChanged={this.rowHasChanged.bind(this)}
-        />
-      </>
+      <TouchableOpacity
+        style={styles.touchableItem}
+        onPress={() =>
+          navigation.navigate('Summary', {
+            id,
+            idUploaded: false,
+          })
+        }>
+        <View style={styles.item}>
+          <Text style={styles.title}>{getById('type', type).title}</Text>
+          <Text numberOfLines={1} style={styles.description}>
+            {description}
+          </Text>
+        </View>
+        <View style={styles.rightBox}>
+          <Image
+            style={styles.image}
+            source={{uri: getById('type', type).image}}
+          />
+          <View
+            style={[
+              styles.itemColor,
+              {backgroundColor: getById('color', color).value},
+            ]}
+          />
+        </View>
+      </TouchableOpacity>
     );
-  }
+  };
 
-  async loadItems(day) {
-    const items = await queryAll();
-
-    for (let i = -15; i < 85; i++) {
-      const time = day.timestamp + i * 24 * 60 * 60 * 1000;
-      const strTime = this.timeToString(time);
-
-      this.state.items[strTime] = [];
-      const currDateItems = items.reduce((total, item) => {
-        strTime === this.timeToString(item.creationDate) &&
-          (total = [...total, item]);
-        return total;
-      }, []);
-
-      currDateItems.length > 0 &&
-        currDateItems.forEach(item => {
-          this.state.items[strTime].push(item);
-        });
-    }
-    const newItems = {};
-    Object.keys(this.state.items).forEach(key => {
-      newItems[key] = this.state.items[key];
-    });
-    this.setState({
-      items: newItems,
-    });
-  }
-
-  renderItem({id, description, color, type}) {
-    const swipeoutButtons = [{text: 'Dell', onPress: () => deleteById(id)}];
-    return (
-      <Swipeout
-        right={swipeoutButtons}
-        autoClose={true}
-        style={styles.itemBox}
-        close={true}>
-        <TouchableOpacity
-          style={styles.touchableItem}
-          onPress={() =>
-            this.props.navigation.navigate('Summary', {
-              id,
-            })
-          }>
-          <View style={styles.item}>
-            <Text style={styles.title}>{getById('type', type).title}</Text>
-            <Text numberOfLines={1} style={styles.description}>
-              {description}
-            </Text>
-          </View>
-          <View style={styles.rightBox}>
-            <Image
-              style={styles.image}
-              source={{uri: getById('type', type).image}}
-            />
-            <View
-              style={[
-                styles.itemColor,
-                {backgroundColor: getById('color', color).value},
-              ]}
-            />
-          </View>
-        </TouchableOpacity>
-      </Swipeout>
-    );
-  }
-
-  renderEmptyDate() {
-    return (
-      <View style={styles.emptyDate}>
-        <Text>This is empty date!</Text>
-      </View>
-    );
-  }
-
-  rowHasChanged(r1, r2) {
+  const rowHasChanged = (r1, r2) => {
     return r1.name !== r2.name;
-  }
+  };
 
-  timeToString(time) {
+  const timeToString = time => {
     const date = new Date(time);
     return date.toISOString().split('T')[0];
-  }
-}
+  };
+
+  useEffect(() => {
+    const loadItems = async () => {
+      const query = await queryAll();
+
+      for (let i = -15; i < 85; i++) {
+        const time = new Date().getTime() + i * 24 * 60 * 60 * 1000;
+        const strTime = timeToString(time);
+
+        items[strTime] = [];
+        const currDateItems = query.reduce((total, item) => {
+          strTime === timeToString(item.creationDate) &&
+            (total = [...total, item]);
+          return total;
+        }, []);
+
+        currDateItems.length > 0 &&
+          currDateItems.forEach(item => {
+            items[strTime].push(item);
+          });
+      }
+      const newItems = {};
+      Object.keys(items).forEach(key => {
+        newItems[key] = items[key];
+      });
+      setItems(newItems);
+    };
+
+    const blur = navigation.addListener('blur', () => {
+      console.log('blur');
+      setItems({});
+    });
+
+    const focus = navigation.addListener('focus', () => {
+      console.log('focus');
+      loadItems();
+    });
+
+    return () => {
+      blur();
+      focus();
+    };
+  }, [navigation, items]);
+
+  return (
+    <Agenda
+      items={items}
+      renderItem={renderItem}
+      rowHasChanged={rowHasChanged}
+    />
+  );
+};
 
 const styles = StyleSheet.create({
   touchableItem: {
@@ -126,8 +107,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingLeft: 10,
     paddingRight: 0,
-  },
-  itemBox: {
     backgroundColor: 'white',
     borderRadius: 5,
     marginRight: 10,

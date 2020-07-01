@@ -45,7 +45,7 @@ const Summary = ({route, theme, navigation}) => {
         {
           text: 'Usuń',
           onPress: async () => {
-            // await deleteById(query.id);
+            await deleteById(query.id);
             navigation.navigate('Calendar');
           },
         },
