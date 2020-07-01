@@ -13,6 +13,8 @@ const theme = {
     ...DefaultTheme.colors,
     primary: '#0ead69',
     accent: '#540d6e',
+    red: '#cc0000',
+    blue: '#008CBA',
   },
 };
 

@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import {View, StyleSheet} from 'react-native';
 import {Button} from 'react-native-paper';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
@@ -8,7 +9,7 @@ import Step3 from './form_steps/Step3';
 import Step4 from './form_steps/step4';
 
 const Label = ({active}) => (
-  <Button icon="brightness-1" color={active ? 'green' : 'black'} />
+  <View style={[styles.label, {backgroundColor: active ? 'green' : 'grey'}]} />
 );
 
 const Tab = createBottomTabNavigator();
@@ -38,7 +39,7 @@ const Form = () => {
         inactiveTintColor: 'gray',
         labelPosition: 'beside-icon',
         showLabel: false,
-        // style: {width: 200},
+        style: {paddingHorizontal: 120},
       }}>
       <Tab.Screen name="Step1">
         {props => <Step1 {...props} action={setFormData} data={formData} />}
@@ -55,5 +56,13 @@ const Form = () => {
     </Tab.Navigator>
   );
 };
+
+const styles = StyleSheet.create({
+  label: {
+    width: 14,
+    height: 14,
+    borderRadius: 50,
+  },
+});
 
 export default Form;

@@ -1,8 +1,11 @@
 import React, {Component} from 'react';
-import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import {StyleSheet, Text, View, TouchableOpacity, Image} from 'react-native';
 import {Agenda} from 'react-native-calendars';
-import {queryAll} from '../database/realmSchema';
-import moment from 'moment';
+import {queryAll, deleteById} from '../database/realmSchema';
+import {NavigationEvents} from '@react-navigation';
+import Swipeout from 'react-native-swipeout';
+
+import {getById} from '../data/dummyData';
 
 class Calendar extends Component {
   constructor(props) {
@@ -15,65 +18,41 @@ class Calendar extends Component {
 
   render() {
     return (
-      <Agenda
-        items={this.state.items}
-        loadItemsForMonth={this.loadItems.bind(this)}
-        // selected={}
-        renderItem={this.renderItem.bind(this)}
-        renderEmptyDate={this.renderEmptyDate.bind(this)}
-        rowHasChanged={this.rowHasChanged.bind(this)}
-        // markingType={'period'}
-        // markedDates={{
-        //    '2017-05-08': {textColor: '#43515c'},
-        //    '2017-05-09': {textColor: '#43515c'},
-        //    '2017-05-14': {startingDay: true, endingDay: true, color: 'blue'},
-        //    '2017-05-21': {startingDay: true, color: 'blue'},
-        //    '2017-05-22': {endingDay: true, color: 'gray'},
-        //    '2017-05-24': {startingDay: true, color: 'gray'},
-        //    '2017-05-25': {color: 'gray'},
-        //    '2017-05-26': {endingDay: true, color: 'gray'}}}
-        // monthFormat={'yyyy'}
-        // theme={{calendarBackground: 'red', agendaKnobColor: 'green'}}
-        //renderDay={(day, item) => (<Text>{day ? day.day: 'item'}</Text>)}
-        // hideExtraDays={false}
-      />
+      <>
+        <NavigationEvents
+          onWillFocus={payload => console.log('will focus', payload)}
+          onDidFocus={payload => console.log('did focus', payload)}
+          onWillBlur={payload => console.log('will blur', payload)}
+          onDidBlur={payload => console.log('did blur', payload)}
+        />
+        <Agenda
+          items={this.state.items}
+          loadItemsForMonth={this.loadItems.bind(this)}
+          renderItem={this.renderItem.bind(this)}
+          rowHasChanged={this.rowHasChanged.bind(this)}
+        />
+      </>
     );
   }
 
   async loadItems(day) {
-    console.log(day.timestamp);
-    // this.state.items = {};
     const items = await queryAll();
-
-    // items.forEach(({creationDate, description}, index) => {
-    //   const strTime = moment(creationDate).format('YYYY-MM-DD');
-    //   !this.state.items[strTime] && (this.state.items[strTime] = []);
-    //   this.state.items[strTime].push({
-    //     name: description,
-    //     index,
-    //   });
-    // });
-    // const newItems = {...this.state.items};
-    // this.setState({
-    //   items: newItems,
-    // });
 
     for (let i = -15; i < 85; i++) {
       const time = day.timestamp + i * 24 * 60 * 60 * 1000;
       const strTime = this.timeToString(time);
-      if (!this.state.items[strTime]) {
-        this.state.items[strTime] = [];
-        const currDateItems = items.reduce((total, item) => {
-          strTime === moment(item.creationDate).format('YYYY-MM-DD') &&
-            (total = [...total, item]);
-          return total;
-        }, []);
 
-        currDateItems.length > 0 &&
-          currDateItems.forEach(item => {
-            this.state.items[strTime].push(item);
-          });
-      }
+      this.state.items[strTime] = [];
+      const currDateItems = items.reduce((total, item) => {
+        strTime === this.timeToString(item.creationDate) &&
+          (total = [...total, item]);
+        return total;
+      }, []);
+
+      currDateItems.length > 0 &&
+        currDateItems.forEach(item => {
+          this.state.items[strTime].push(item);
+        });
     }
     const newItems = {};
     Object.keys(this.state.items).forEach(key => {
@@ -84,19 +63,41 @@ class Calendar extends Component {
     });
   }
 
-  renderItem(item) {
+  renderItem({id, description, color, type}) {
+    const swipeoutButtons = [{text: 'Dell', onPress: () => deleteById(id)}];
     return (
-      <TouchableOpacity
-        style={styles.item}
-        onPress={() =>
-          this.props.navigation.navigate('Summary', {
-            id: item.id,
-          })
-        }
-        onLongPress={() => console.log('long')}>
-        <Text>{item.id}</Text>
-        <Text>{item.description}</Text>
-      </TouchableOpacity>
+      <Swipeout
+        right={swipeoutButtons}
+        autoClose={true}
+        style={styles.itemBox}
+        close={true}>
+        <TouchableOpacity
+          style={styles.touchableItem}
+          onPress={() =>
+            this.props.navigation.navigate('Summary', {
+              id,
+            })
+          }>
+          <View style={styles.item}>
+            <Text style={styles.title}>{getById('type', type).title}</Text>
+            <Text numberOfLines={1} style={styles.description}>
+              {description}
+            </Text>
+          </View>
+          <View style={styles.rightBox}>
+            <Image
+              style={styles.image}
+              source={{uri: getById('type', type).image}}
+            />
+            <View
+              style={[
+                styles.itemColor,
+                {backgroundColor: getById('color', color).value},
+              ]}
+            />
+          </View>
+        </TouchableOpacity>
+      </Swipeout>
     );
   }
 
@@ -119,18 +120,44 @@ class Calendar extends Component {
 }
 
 const styles = StyleSheet.create({
-  item: {
-    backgroundColor: 'white',
+  touchableItem: {
     flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingLeft: 10,
+    paddingRight: 0,
+  },
+  itemBox: {
+    backgroundColor: 'white',
     borderRadius: 5,
-    padding: 10,
     marginRight: 10,
     marginTop: 8,
   },
+  rightBox: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+  },
+  image: {
+    width: 100,
+    height: 'auto',
+  },
+  item: {
+    flex: 1,
+    paddingVertical: 14,
+  },
+  title: {
+    fontSize: 22,
+    fontWeight: '600',
+    marginBottom: 4,
+  },
+  description: {},
   emptyDate: {
     height: 15,
     flex: 1,
     paddingTop: 30,
+  },
+  itemColor: {
+    width: 36,
   },
 });
 

@@ -83,6 +83,10 @@ target 'codeAgency' do
 
   pod 'RealmJS', :path => '../node_modules/realm'
 
+  pod 'RNSVG', :path => '../node_modules/react-native-svg'
+
+  pod 'react-native-view-shot', :path => '../node_modules/react-native-view-shot'
+
   target 'codeAgencyTests' do
     inherit! :complete
     # Pods for testing

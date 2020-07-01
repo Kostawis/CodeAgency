@@ -21,33 +21,60 @@ const Step4 = ({data, action, navigation}) => {
   };
 
   return (
-    <View style={styles.box}>
-      <Text>Prywatne</Text>
-      <Switch
-        value={data.private}
-        onValueChange={() => setEndOptions(!data.private, 'private')}
-      />
-      <Text>Pozwól na udostępnianie</Text>
-      <Switch
-        value={data.allowShare}
-        onValueChange={() => setEndOptions(!data.allowShare, 'allowShare')}
-      />
+    <View>
+      <View style={styles.switch}>
+        <Text>Prywatne</Text>
+        <Switch
+          value={data.private}
+          onValueChange={() => setEndOptions(!data.private, 'private')}
+        />
+      </View>
+      <View style={styles.switch}>
+        <Text>Pozwól na udostępnianie</Text>
+        <Switch
+          value={data.allowShare}
+          onValueChange={() => setEndOptions(!data.allowShare, 'allowShare')}
+        />
+      </View>
       <TextInput
-        label="Dodaj opis"
+        label="Dodaj opis..."
         multiline={true}
         value={data.description}
+        style={styles.textarea}
         onChangeText={text => setEndOptions(text, 'description')}
       />
-      <Button mode="contained" icon="upload" onPress={insertNewItem}>
+      <Button
+        mode="contained"
+        icon="upload"
+        onPress={insertNewItem}
+        style={styles.button}>
         Upload configuration
       </Button>
-      <Button mode="contained" icon="upload" onPress={deleteAll}>
+      {/* <Button mode="contained" icon="upload" onPress={deleteAll}>
         Delete all
-      </Button>
+      </Button> */}
     </View>
   );
 };
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  button: {
+    marginVertical: 30,
+    marginHorizontal: 70,
+  },
+  switch: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 30,
+    paddingVertical: 20,
+  },
+  textarea: {
+    marginTop: 20,
+    minHeight: 90,
+    marginHorizontal: 15,
+    borderTopLeftRadius: 8,
+    borderTopRightRadius: 8,
+  },
+});
 
 export default Step4;

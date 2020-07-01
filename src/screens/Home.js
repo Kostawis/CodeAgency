@@ -35,9 +35,9 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    marginHorizontal: 15,
+    marginHorizontal: 30,
   },
-  button: {marginBottom: 10, width: '100%'},
+  button: {marginVertical: 7, width: '100%', padding: 6},
 });
 
 export default Home;

@@ -55,6 +55,21 @@ export const queryAll = () =>
       .catch(err => reject(err));
   });
 
+export const deleteById = itemId =>
+  new Promise((resolve, reject) => {
+    Realm.open(databaseOptions)
+      .then(realm => {
+        realm.write(() => {
+          const [currentItem] = [...realm.objects(ALL_DATA_SCHEMA)].filter(
+            item => item.id === itemId,
+          );
+          realm.delete(currentItem);
+          resolve();
+        });
+      })
+      .catch(err => reject(err));
+  });
+
 export const deleteAll = () =>
   new Promise((resolve, reject) => {
     Realm.open(databaseOptions)
